@@ -419,13 +419,13 @@
                     } else if (nextClass && nextClass.subject === "정보없음") {
                         document.getElementById('next-subject-info').innerText = `${nextPeriodObj.period}교시: 정보없음`;
                     } else {
-                        document.getElementById('next-subject-info').innerText = "하교";
+                        document.getElementById('next-subject-info').innerText = "없음 (정규수업 끝)";
                     }
                 } else {
                     document.getElementById('next-subject-info').innerText = nextPeriodObj.name;
                 }
             } else {
-                document.getElementById('next-subject-info').innerText = "하교;
+                document.getElementById('next-subject-info').innerText = "없음 (일정 완료)";
             }
 
             document.getElementById('period-time-range').innerText = timeRangeText;
