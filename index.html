@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3-7반 시간표 및 일정</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>시간표</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -21,8 +24,7 @@
     <div class="w-full max-w-md bg-white min-h-screen shadow-lg flex flex-col">
         <header class="bg-blue-600 text-white px-5 py-4 flex justify-between items-center sticky top-0 z-20 shadow-md">
             <div>
-                <h1 class="text-lg font-bold">3-7반 스마트 시간표</h1>
-                <p id="current-date-str" class="text-xs text-blue-100 mt-0.5">로딩 중...</p>
+                <p id="current-date-str" class="text-lg font-bold text-white">로딩 중...</p>
             </div>
             <button onclick="toggleAllTable()" id="toggle-btn" class="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition">
                 전체 시간표 보기
@@ -44,6 +46,10 @@
                     <p id="current-room" class="text-xs text-gray-500 mt-0.5">-</p>
                 </div>
 
+                <div class="flex justify-between items-center mb-1 px-1">
+                    <span class="text-[10px] text-gray-500 font-semibold">진행률</span>
+                    <span id="progress-text" class="text-[10px] text-blue-600 font-bold">0%</span>
+                </div>
                 <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden mb-3">
                     <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
                 </div>
@@ -69,12 +75,12 @@
                     <table class="w-full text-xs text-center border-collapse">
                         <thead>
                             <tr class="bg-gray-100 text-gray-700 border-b border-gray-200">
-                                <th class="p-2 border-r border-gray-200 font-semibold">교시</th>
-                                <th class="p-2 border-r border-gray-200 font-semibold">월</th>
-                                <th class="p-2 border-r border-gray-200 font-semibold">화</th>
-                                <th class="p-2 border-r border-gray-200 font-semibold">수</th>
-                                <th class="p-2 border-r border-gray-200 font-semibold">목</th>
-                                <th class="p-2 font-semibold">금</th>
+                                <th class="p-2 border-r border-gray-200 font-semibold min-w-[40px]">교시</th>
+                                <th class="p-2 border-r border-gray-200 font-semibold min-w-[50px]">월</th>
+                                <th class="p-2 border-r border-gray-200 font-semibold min-w-[50px]">화</th>
+                                <th class="p-2 border-r border-gray-200 font-semibold min-w-[50px]">수</th>
+                                <th class="p-2 border-r border-gray-200 font-semibold min-w-[50px]">목</th>
+                                <th class="p-2 font-semibold min-w-[50px]">금</th>
                             </tr>
                         </thead>
                         <tbody id="full-table-body">
@@ -85,12 +91,12 @@
 
             <section class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
                 <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-gray-800 text-base">📝 내 일정 관리</h3>
+                    <h3 class="font-bold text-gray-800 text-base">내 일정 추가</h3>
                     <span class="text-[10px] text-gray-400">주 단위 자동 초기화</span>
                 </div>
 
                 <form id="schedule-form" onsubmit="addSchedule(event)" class="space-y-2 mb-4">
-                    <div class="grid grid-cols-3 gap-2">
+                    <div class="grid grid-cols-2 gap-2">
                         <select id="schedule-day" class="text-xs border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
                             <option value="월">월요일</option>
                             <option value="화">화요일</option>
@@ -98,15 +104,23 @@
                             <option value="목">목요일</option>
                             <option value="금">금요일</option>
                         </select>
-                        <input type="text" id="schedule-time" placeholder="시간 (예: 16:30)" required class="text-xs border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none col-span-2">
+                        <select id="schedule-period" class="text-xs border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+                            <option value="1">1교시</option>
+                            <option value="2">2교시</option>
+                            <option value="3">3교시</option>
+                            <option value="4">4교시</option>
+                            <option value="5">5교시</option>
+                            <option value="6">6교시</option>
+                            <option value="7">7교시</option>
+                        </select>
                     </div>
-                    <input type="text" id="schedule-content" placeholder="일정 내용을 입력하세요 (예: 수학 과제 제출)" required class="w-full text-xs border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <input type="text" id="schedule-content" placeholder="일정 내용을 입력하세요" required class="w-full text-xs border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 rounded-lg transition shadow-sm">
-                        일정 추가하기
+                        일정 추가
                     </button>
                 </form>
 
-                <div id="schedule-list" class="space-y-2">
+                <div id="schedule-list" class="space-y-2 pt-2 border-t border-gray-100">
                 </div>
             </section>
         </main>
@@ -115,66 +129,107 @@
     <script>
         const timetableData = {
             1: [
-                { period: 1, time: "8:40~9:30", subject: "공체", classCode: "", room: "본반 교실" },
+                { period: 1, time: "8:40~9:30", subject: "창체", classCode: "", room: "본반 교실" },
                 { period: 2, time: "9:40~10:30", subject: "영문", classCode: "3B", room: "이동: 3-9" },
-                { period: 3, time: "10:40~11:30", subject: "D 고윤", classCode: "3D고윤", room: "이동: 3-7" },
+                { period: 3, time: "10:40~11:30", subject: "고윤", classCode: "3D", room: "이동: 3-7" },
                 { period: 4, time: "11:40~12:30", subject: "수과탐", classCode: "", room: "본반 교실" },
-                { period: 5, time: "13:35~14:25", subject: "사문탐", classCode: "3E2사문탐", room: "이동: 3-8" },
-                { period: 6, time: "14:35~15:25", subject: "고전", classCode: "", room: "본반 교실" },
-                { period: 7, time: "15:40~16:30", subject: "수능이후", classCode: "오후수업", room: "본반 교실" }
+                { period: 5, time: "13:35~14:25", subject: "사문탐", classCode: "3E2", room: "이동: 3-8" },
+                { period: 6, time: "14:35~15:25", subject: "국어", classCode: "", room: "본반 교실" },
+                { period: 7, time: "15:40~16:30", subject: "정보없음", classCode: "", room: "-" }
             ],
             2: [
                 { period: 1, time: "8:40~9:30", subject: "중국", classCode: "3A", room: "이동: 3-9" },
-                { period: 2, time: "9:40~10:30", subject: "진영", classCode: "", room: "본반 교실" },
+                { period: 2, time: "9:40~10:30", subject: "영어", classCode: "", room: "본반 교실" },
                 { period: 3, time: "10:40~11:30", subject: "여지", classCode: "3C2", room: "이동: 3-2" },
                 { period: 4, time: "11:40~12:30", subject: "영문", classCode: "3B", room: "이동: 3-9" },
                 { period: 5, time: "13:35~14:25", subject: "창진", classCode: "", room: "본반 교실" },
-                { period: 6, time: "14:35~15:25", subject: "수능이후", classCode: "오후수업", room: "본반 교실" },
-                { period: 7, time: "15:40~16:30", subject: "수능이후", classCode: "오후수업", room: "본반 교실" }
+                { period: 6, time: "14:35~15:25", subject: "정보없음", classCode: "", room: "-" },
+                { period: 7, time: "15:40~16:30", subject: "정보없음", classCode: "", room: "-" }
             ],
             3: [
                 { period: 1, time: "8:40~9:30", subject: "여지", classCode: "3C2", room: "이동: 3-2" },
                 { period: 2, time: "9:40~10:30", subject: "수과탐", classCode: "", room: "본반 교실" },
                 { period: 3, time: "10:40~11:30", subject: "중국", classCode: "3A", room: "이동: 3-9" },
-                { period: 4, time: "11:40~12:30", subject: "D 고윤", classCode: "3D고윤", room: "이동: 3-7" },
-                { period: 5, time: "13:35~14:25", subject: "윤건", classCode: "", room: "본반 교실" },
+                { period: 4, time: "11:40~12:30", subject: "고윤", classCode: "3D", room: "이동: 3-7" },
+                { period: 5, time: "13:35~14:25", subject: "체육", classCode: "", room: "본반 교실" },
                 { period: 6, time: "14:35~15:25", subject: "창체", classCode: "", room: "본반 교실" },
                 { period: 7, time: null, subject: "-", classCode: "", room: "-" }
             ],
             4: [
-                { period: 1, time: "8:40~9:30", subject: "고전", classCode: "", room: "본반 교실" },
+                { period: 1, time: "8:40~9:30", subject: "국어", classCode: "", room: "본반 교실" },
                 { period: 2, time: "9:40~10:30", subject: "영문", classCode: "3B", room: "이동: 3-9" },
-                { period: 3, time: "10:40~11:30", subject: "D 고윤", classCode: "3D고윤", room: "이동: 3-7" },
-                { period: 4, time: "11:40~12:30", subject: "진영", classCode: "", room: "본반 교실" },
-                { period: 5, time: "13:35~14:25", subject: "사문탐", classCode: "3E2사문탐", room: "이동: 3-8" },
-                { period: 6, time: "14:35~15:25", subject: "윤건", classCode: "", room: "본반 교실" },
+                { period: 3, time: "10:40~11:30", subject: "고윤", classCode: "3D", room: "이동: 3-7" },
+                { period: 4, time: "11:40~12:30", subject: "영어", classCode: "", room: "본반 교실" },
+                { period: 5, time: "13:35~14:25", subject: "사문탐", classCode: "3E2", room: "이동: 3-8" },
+                { period: 6, time: "14:35~15:25", subject: "체육", classCode: "", room: "본반 교실" },
                 { period: 7, time: null, subject: "-", classCode: "", room: "-" }
             ],
             5: [
-                { period: 1, time: "8:40~9:30", subject: "사문탐", classCode: "3E2사문탐", room: "이동: 3-8" },
-                { period: 2, time: "9:40~10:30", subject: "고전", classCode: "", room: "본반 교실" },
+                { period: 1, time: "8:40~9:30", subject: "사문탐", classCode: "3E2", room: "이동: 3-8" },
+                { period: 2, time: "9:40~10:30", subject: "국어", classCode: "", room: "본반 교실" },
                 { period: 3, time: "10:40~11:30", subject: "여지", classCode: "3C2", room: "이동: 3-2" },
                 { period: 4, time: "11:40~12:30", subject: "중국", classCode: "3A", room: "이동: 3-9" },
                 { period: 5, time: "13:35~14:25", subject: "수과탐", classCode: "", room: "본반 교실" },
-                { period: 6, time: "14:35~15:25", subject: "진영", classCode: "", room: "본반 교실" },
-                { period: 7, time: "15:40~16:30", subject: "수능이후", classCode: "오후수업", room: "본반 교실" }
+                { period: 6, time: "14:35~15:25", subject: "영어", classCode: "", room: "본반 교실" },
+                { period: 7, time: "15:40~16:30", subject: "정보없음", classCode: "", room: "-" }
             ]
+        };
+
+        const pulledClasses = {
+            '08-21': { 7: { d: 5, p: 5 } },
+            '08-24': { 7: { d: 1, p: 5 } },
+            '08-25': { 6: { d: 2, p: 5 }, 7: { d: 3, p: 5 } },
+            '08-28': { 7: { d: 5, p: 6 } },
+            '08-31': { 7: { d: 1, p: 6 } },
+            '09-01': { 6: { d: 4, p: 5 }, 7: { d: 4, p: 6 } },
+            '09-04': { 7: { d: 5, p: 5 } },
+            '09-07': { 7: { d: 1, p: 5 } },
+            '09-08': { 6: { d: 2, p: 5 }, 7: { d: 3, p: 5 } },
+            '09-11': { 7: { d: 5, p: 6 } },
+            '09-14': { 7: { d: 1, p: 6 } },
+            '09-15': { 6: { d: 4, p: 5 }, 7: { d: 4, p: 6 } },
+            '09-18': { 7: { d: 5, p: 5 } },
+            '09-21': { 7: { d: 1, p: 5 } },
+            '09-22': { 6: { d: 2, p: 5 }, 7: { d: 3, p: 5 } },
+            '09-28': { 7: { d: 1, p: 6 } },
+            '09-29': { 6: { d: 4, p: 5 }, 7: { d: 4, p: 6 } },
+            '10-02': { 7: { d: 5, p: 6 } },
+            '10-06': { 6: { d: 2, p: 5 }, 7: { d: 3, p: 5 } },
+            '10-12': { 7: { d: 1, p: 5 } },
+            '10-19': { 7: { d: 1, p: 6 } },
+            '10-23': { 7: { d: 5, p: 6 } },
+            '10-26': { 7: { d: 4, p: 5 } },
+            '10-27': { 6: { d: 2, p: 5 }, 7: { d: 3, p: 5 } },
+            '10-30': { 7: { d: 5, p: 5 } },
+            '11-02': { 7: { d: 5, p: 6 } },
+            '11-03': { 6: { d: 4, p: 5 }, 7: { d: 4, p: 6 } },
+            '11-06': { 7: { d: 5, p: 6 } },
+            '11-09': { 7: { d: 4, p: 6 } },
+            '11-10': { 6: { d: 4, p: 5 }, 7: { d: 4, p: 6 } },
+            '11-13': { 7: { d: 5, p: 5 } },
+            '11-16': { 7: { d: 5, p: 5 } },
+            '11-17': { 6: { d: 4, p: 5 }, 7: { d: 5, p: 6 } }
         };
 
         const periodSlots = [
             { period: 0, name: "조례/등교", start: "08:30", end: "08:40" },
             { period: 1, name: "1교시", start: "08:40", end: "09:30" },
+            { period: "break1", name: "쉬는 시간", start: "09:30", end: "09:40" },
             { period: 2, name: "2교시", start: "09:40", end: "10:30" },
+            { period: "break2", name: "쉬는 시간", start: "10:30", end: "10:40" },
             { period: 3, name: "3교시", start: "10:40", end: "11:30" },
+            { period: "break3", name: "쉬는 시간", start: "11:30", end: "11:40" },
             { period: 4, name: "4교시", start: "11:40", end: "12:30" },
-            { period: "lunch", name: "중식 시간", start: "12:30", end: "13:35" },
+            { period: "lunch", name: "점심 시간", start: "12:30", end: "13:35" },
             { period: 5, name: "5교시", start: "13:35", end: "14:25" },
+            { period: "break5", name: "쉬는 시간", start: "14:25", end: "14:35" },
             { period: 6, name: "6교시", start: "14:35", end: "15:25" },
             { period: "clean", name: "청소 시간", start: "15:25", end: "15:40" },
             { period: 7, name: "7교시", start: "15:40", end: "16:30" }
         ];
 
         let isFullTableView = false;
+        let currentRenderedDay = -1;
 
         function timeToMinutes(timeStr) {
             const [h, m] = timeStr.split(':').map(Number);
@@ -189,10 +244,56 @@
             return `${d.getUTCFullYear()}-W${weekNo}`;
         }
 
+        function getDatesOfTargetWeek() {
+            const now = new Date();
+            const currentDay = now.getDay();
+            let mondayOffset;
+            if (currentDay === 0) mondayOffset = 1;
+            else if (currentDay === 6) mondayOffset = 2;
+            else mondayOffset = 1 - currentDay;
+
+            const dates = {};
+            for (let i = 1; i <= 5; i++) {
+                let d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                d.setDate(now.getDate() + mondayOffset + (i - 1));
+                dates[i] = d;
+            }
+            return dates;
+        }
+
+        function getDaySchedule(dateObj) {
+            let dayIdx = dateObj.getDay();
+            if (dayIdx === 0 || dayIdx === 6) return []; 
+
+            let schedule = JSON.parse(JSON.stringify(timetableData[dayIdx]));
+
+            let mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+            let dd = String(dateObj.getDate()).padStart(2, '0');
+            let dateKey = `${mm}-${dd}`;
+
+            if (pulledClasses[dateKey]) {
+                const exception = pulledClasses[dateKey];
+                for (let p in exception) {
+                    const targetPeriod = parseInt(p);
+                    const sourceD = exception[p].d;
+                    const sourceP = exception[p].p;
+                    
+                    const sourceClass = timetableData[sourceD].find(c => c.period === sourceP);
+                    const targetIndex = schedule.findIndex(c => c.period === targetPeriod);
+                    
+                    if (sourceClass && targetIndex !== -1) {
+                        schedule[targetIndex].subject = sourceClass.subject;
+                        schedule[targetIndex].classCode = sourceClass.classCode;
+                        schedule[targetIndex].room = sourceClass.room;
+                    }
+                }
+            }
+            return schedule;
+        }
+
         function initApp() {
             checkAndResetSchedules();
             updateDashboard();
-            renderTodayTimetable();
             renderFullTimetable();
             renderSchedules();
             setInterval(updateDashboard, 1000);
@@ -214,25 +315,31 @@
             const dateString = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 (${daysMap[dayIdx]})`;
             document.getElementById('current-date-str').innerText = dateString;
 
-            const currentMinutes = now.getHours() * 60 + now.getMinutes();
-            const currentSeconds = now.getSeconds();
-            
-            let timeRangeText = "학교 안심 시간";
-            let progressPercent = 0;
-            let remainingText = "";
+            if (currentRenderedDay !== dayIdx) {
+                currentRenderedDay = dayIdx;
+                renderTodayTimetable(now);
+            }
 
             if (dayIdx === 0 || dayIdx === 6) {
                 document.getElementById('period-badge').innerText = "주말 / 휴일";
-                document.getElementById('period-time-range').innerText = "주말입니다";
-                document.getElementById('current-subject').innerText = "즐거운 주말 보내세요!";
+                document.getElementById('period-time-range').innerText = "-";
+                document.getElementById('current-subject').innerText = "즐거운 주말 보내세요";
                 document.getElementById('current-room').innerText = "";
                 document.getElementById('time-remaining').innerText = "휴식 중";
                 document.getElementById('progress-bar').style.width = "0%";
-                document.getElementById('next-subject-info').innerText = "주말";
+                document.getElementById('progress-text').innerText = "0%";
+                document.getElementById('next-subject-info').innerText = "일정 없음";
                 return;
             }
 
-            const daySchedule = timetableData[dayIdx] || [];
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const currentSeconds = now.getSeconds();
+            
+            let timeRangeText = "방과 후";
+            let progressPercent = 0;
+            let remainingText = "";
+
+            const daySchedule = getDaySchedule(now);
             let activePeriodObj = null;
             let nextPeriodObj = null;
 
@@ -266,9 +373,18 @@
                 if (typeof activePeriodObj.period === 'number') {
                     const foundClass = daySchedule.find(s => s.period === activePeriodObj.period);
                     document.getElementById('period-badge').innerText = `${activePeriodObj.period}교시 진행 중`;
-                    if (foundClass) {
+                    if (foundClass && foundClass.subject !== "-" && foundClass.subject !== "정보없음") {
                         document.getElementById('current-subject').innerText = foundClass.subject + (foundClass.classCode ? ` (${foundClass.classCode})` : '');
-                        document.getElementById('current-room').innerText = `📍 ${foundClass.room}`;
+                        
+                        let roomText = `${foundClass.room}`;
+                        const customSchedules = JSON.parse(localStorage.getItem('timetable_schedules') || '[]').filter(s => s.day === daysMap[dayIdx] && parseInt(s.period) === activePeriodObj.period);
+                        if (customSchedules.length > 0) {
+                            roomText += ` | ${customSchedules.map(ps => ps.content).join(', ')}`;
+                        }
+                        document.getElementById('current-room').innerText = roomText;
+                    } else if (foundClass && foundClass.subject === "정보없음") {
+                        document.getElementById('current-subject').innerText = "정보없음";
+                        document.getElementById('current-room').innerText = "";
                     } else {
                         document.getElementById('current-subject').innerText = "수업 없음";
                         document.getElementById('current-room').innerText = "";
@@ -276,64 +392,94 @@
                 } else {
                     document.getElementById('period-badge').innerText = activePeriodObj.name;
                     document.getElementById('current-subject').innerText = activePeriodObj.name;
-                    document.getElementById('current-room').innerText = "휴식 및 재충전 시간";
+                    document.getElementById('current-room').innerText = "휴식 및 다음 시간 준비";
                 }
             } else {
                 if (currentMinutes < timeToMinutes("08:30")) {
                     document.getElementById('period-badge').innerText = "등교 전";
                     document.getElementById('current-subject').innerText = "등교 준비 시간";
-                    document.getElementById('current-room').innerText = "오늘 하루도 화이팅!";
+                    document.getElementById('current-room').innerText = "오늘 하루도 화이팅";
+                    timeRangeText = "등교 전";
+                    progressPercent = 0;
                 } else {
                     document.getElementById('period-badge').innerText = "방과 후 / 하교";
                     document.getElementById('current-subject').innerText = "오늘 일정 종료";
-                    document.getElementById('current-room').innerText = "수고하셨습니다!";
+                    document.getElementById('current-room').innerText = "수고하셨습니다";
+                    timeRangeText = "방과 후";
+                    progressPercent = 100;
                 }
-                progressPercent = 100;
                 remainingText = "종료";
             }
 
             if (nextPeriodObj) {
                 if (typeof nextPeriodObj.period === 'number') {
                     const nextClass = daySchedule.find(s => s.period === nextPeriodObj.period);
-                    document.getElementById('next-subject-info').innerText = nextClass ? `${nextPeriodObj.period}교시: ${nextClass.subject} (${nextClass.room})` : `${nextPeriodObj.period}교시`;
+                    if (nextClass && nextClass.subject !== "-" && nextClass.subject !== "정보없음") {
+                        document.getElementById('next-subject-info').innerText = `${nextPeriodObj.period}교시: ${nextClass.subject} (${nextClass.room})`;
+                    } else if (nextClass && nextClass.subject === "정보없음") {
+                        document.getElementById('next-subject-info').innerText = `${nextPeriodObj.period}교시: 정보없음`;
+                    } else {
+                        document.getElementById('next-subject-info').innerText = "하교";
+                    }
                 } else {
                     document.getElementById('next-subject-info').innerText = nextPeriodObj.name;
                 }
             } else {
-                document.getElementById('next-subject-info').innerText = "없음 (일정 완료)";
+                document.getElementById('next-subject-info').innerText = "하교;
             }
 
             document.getElementById('period-time-range').innerText = timeRangeText;
             document.getElementById('time-remaining').innerText = remainingText;
             document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+            document.getElementById('progress-text').innerText = `${Math.floor(progressPercent)}%`;
         }
 
-        function renderTodayTimetable() {
+        function renderTodayTimetable(dateObj) {
             const container = document.getElementById('today-timetable-view');
             container.innerHTML = '';
             
-            const now = new Date();
-            let dayIdx = now.getDay();
-            if (dayIdx === 0 || dayIdx === 6) dayIdx = 1;
+            const dayIdx = dateObj.getDay();
+            
+            if (dayIdx === 0 || dayIdx === 6) {
+                container.innerHTML = `<div class="p-5 text-center text-gray-500 font-medium bg-gray-50 rounded-xl border border-gray-100">오늘은 주말/휴일입니다.<br>예정된 시간표가 없습니다.</div>`;
+                return;
+            }
 
-            const daySchedule = timetableData[dayIdx] || [];
+            const daySchedule = getDaySchedule(dateObj);
+            const daysMap = ['일', '월', '화', '수', '목', '금', '토'];
+            const currentDayStr = daysMap[dayIdx];
+            const allSchedules = JSON.parse(localStorage.getItem('timetable_schedules') || '[]');
+            const todaysSchedules = allSchedules.filter(s => s.day === currentDayStr);
 
             daySchedule.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "flex items-center justify-between p-3 bg-gray-50 hover:bg-blue-50/50 rounded-xl border border-gray-100 transition";
+                card.className = "flex flex-col p-3 bg-gray-50 hover:bg-blue-50/50 rounded-xl border border-gray-100 transition";
                 
+                const periodSchedules = todaysSchedules.filter(s => parseInt(s.period) === item.period);
+                let customHtml = '';
+                if (periodSchedules.length > 0) {
+                    customHtml = `<div class="mt-2 space-y-1 w-full border-t border-gray-100 pt-2">`;
+                    periodSchedules.forEach(ps => {
+                        customHtml += `<div class="text-[11px] bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-bold break-all">${ps.content}</div>`;
+                    });
+                    customHtml += `</div>`;
+                }
+
                 card.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center">${item.period}</span>
-                        <div>
-                            <div class="flex items-center space-x-1.5">
-                                <span class="font-bold text-gray-800 text-sm">${item.subject}</span>
-                                ${item.classCode ? `<span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-semibold">${item.classCode}</span>` : ''}
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center">${item.period}</span>
+                            <div>
+                                <div class="flex items-center space-x-1.5">
+                                    <span class="font-bold text-gray-800 text-sm">${item.subject}</span>
+                                    ${item.classCode ? `<span class="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-semibold">${item.classCode}</span>` : ''}
+                                </div>
+                                <span class="text-[11px] text-gray-400">${item.time || ''}</span>
                             </div>
-                            <span class="text-[11px] text-gray-400">${item.time || ''}</span>
                         </div>
+                        <span class="text-xs font-medium text-gray-500 bg-white px-2 py-1 rounded-md border border-gray-200">${item.room}</span>
                     </div>
-                    <span class="text-xs font-medium text-gray-500 bg-white px-2 py-1 rounded-md border border-gray-200">${item.room}</span>
+                    ${customHtml}
                 `;
                 container.appendChild(card);
             });
@@ -342,27 +488,48 @@
         function renderFullTimetable() {
             const tbody = document.getElementById('full-table-body');
             tbody.innerHTML = '';
+            
+            const schedules = JSON.parse(localStorage.getItem('timetable_schedules') || '[]');
+            const daysMap = ['일', '월', '화', '수', '목', '금', '토'];
+
+            const weekDates = getDatesOfTargetWeek();
+            const fullWeekSchedule = {
+                1: getDaySchedule(weekDates[1]),
+                2: getDaySchedule(weekDates[2]),
+                3: getDaySchedule(weekDates[3]),
+                4: getDaySchedule(weekDates[4]),
+                5: getDaySchedule(weekDates[5]),
+            };
 
             for (let p = 1; p <= 7; p++) {
                 const row = document.createElement('tr');
                 row.className = "border-b border-gray-100";
                 
-                let rowHtml = `<td class="p-2 bg-gray-50 font-bold text-gray-600 border-r border-gray-100">${p}교시</td>`;
+                let rowHtml = `<td class="p-2 bg-gray-50 font-bold text-gray-600 border-r border-gray-100 align-top">${p}교시</td>`;
                 
                 for (let d = 1; d <= 5; d++) {
-                    const dayClasses = timetableData[d];
+                    const dayClasses = fullWeekSchedule[d];
                     const cls = dayClasses.find(c => c.period === p);
                     
+                    const cellSchedules = schedules.filter(s => s.day === daysMap[d] && parseInt(s.period) === p);
+                    let customHtml = '';
+                    if (cellSchedules.length > 0) {
+                        cellSchedules.forEach(ps => {
+                            customHtml += `<div class="text-[9px] bg-yellow-100 text-yellow-800 rounded px-1 py-0.5 mt-1 font-bold break-keep max-w-full">${ps.content}</div>`;
+                        });
+                    }
+
                     if (cls && cls.subject !== "-") {
                         rowHtml += `
-                            <td class="p-2 border-r border-gray-100">
+                            <td class="p-2 border-r border-gray-100 align-top">
                                 <div class="font-bold text-gray-800">${cls.subject}</div>
                                 ${cls.classCode ? `<div class="text-[10px] text-indigo-600">${cls.classCode}</div>` : ''}
                                 <div class="text-[9px] text-gray-400">${cls.room}</div>
+                                ${customHtml}
                             </td>
                         `;
                     } else {
-                        rowHtml += `<td class="p-2 border-r border-gray-100 text-gray-300">-</td>`;
+                        rowHtml += `<td class="p-2 border-r border-gray-100 text-gray-300 align-top">- ${customHtml}</td>`;
                     }
                 }
                 row.innerHTML = rowHtml;
@@ -396,23 +563,30 @@
         function addSchedule(e) {
             e.preventDefault();
             const day = document.getElementById('schedule-day').value;
-            const time = document.getElementById('schedule-time').value;
+            const period = document.getElementById('schedule-period').value;
             const content = document.getElementById('schedule-content').value;
 
             const schedules = JSON.parse(localStorage.getItem('timetable_schedules') || '[]');
-            schedules.push({ id: Date.now(), day, time, content });
+            schedules.push({ id: Date.now(), day, period, content });
             localStorage.setItem('timetable_schedules', JSON.stringify(schedules));
 
-            document.getElementById('schedule-time').value = '';
             document.getElementById('schedule-content').value = '';
+            
             renderSchedules();
+            renderTodayTimetable(new Date());
+            renderFullTimetable();
+            updateDashboard();
         }
 
         function deleteSchedule(id) {
             let schedules = JSON.parse(localStorage.getItem('timetable_schedules') || '[]');
             schedules = schedules.filter(s => s.id !== id);
             localStorage.setItem('timetable_schedules', JSON.stringify(schedules));
+            
             renderSchedules();
+            renderTodayTimetable(new Date());
+            renderFullTimetable();
+            updateDashboard();
         }
 
         function renderSchedules() {
@@ -422,17 +596,17 @@
             listContainer.innerHTML = '';
 
             if (schedules.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">등록된 개인 일정이 없습니다.</p>`;
+                listContainer.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">등록된 일정이 없습니다.</p>`;
                 return;
             }
 
             schedules.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "flex items-center justify-between p-2.5 bg-gray-50 rounded-xl border border-gray-100 text-xs";
+                card.className = "flex items-center justify-between p-2.5 bg-gray-50 rounded-xl border border-gray-100 text-xs mt-2";
                 card.innerHTML = `
                     <div class="flex items-center space-x-2">
                         <span class="bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded">${item.day}</span>
-                        <span class="text-gray-500 font-medium">${item.time}</span>
+                        <span class="text-gray-500 font-medium">${item.period}교시</span>
                         <span class="text-gray-800 font-semibold">${item.content}</span>
                     </div>
                     <button onclick="deleteSchedule(${item.id})" class="text-red-400 hover:text-red-600 font-bold px-1.5 py-0.5">✕</button>
