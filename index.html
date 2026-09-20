@@ -335,7 +335,7 @@
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
             const currentSeconds = now.getSeconds();
             
-            let timeRangeText = "방과 후";
+            let timeRangeText = "";
             let progressPercent = 0;
             let remainingText = "";
 
@@ -399,20 +399,27 @@
                     document.getElementById('period-badge').innerText = "등교 전";
                     document.getElementById('current-subject').innerText = "등교 준비 시간";
                     document.getElementById('current-room').innerText = "오늘 하루도 화이팅";
-                    timeRangeText = "등교 전";
+                    timeRangeText = "~ 08:30";
                     progressPercent = 0;
+                    
+                    const remainSecs = (timeToMinutes("08:30") * 60) - (currentMinutes * 60 + currentSeconds);
+                    const remMin = Math.floor(remainSecs / 60);
+                    const remSec = remainSecs % 60;
+                    remainingText = `${remMin}분 ${remSec}초 전`;
+                    
+                    nextPeriodObj = periodSlots[0];
                 } else {
                     document.getElementById('period-badge').innerText = "방과 후 / 하교";
                     document.getElementById('current-subject').innerText = "오늘 일정 종료";
                     document.getElementById('current-room').innerText = "수고하셨습니다";
                     timeRangeText = "방과 후";
                     progressPercent = 100;
+                    remainingText = "종료";
                 }
-                remainingText = "종료";
             }
 
             if (nextPeriodObj) {
-                if (typeof nextPeriodObj.period === 'number') {
+                if (typeof nextPeriodObj.period === 'number' && nextPeriodObj.period > 0) {
                     const nextClass = daySchedule.find(s => s.period === nextPeriodObj.period);
                     if (nextClass && nextClass.subject !== "-" && nextClass.subject !== "정보없음") {
                         document.getElementById('next-subject-info').innerText = `${nextPeriodObj.period}교시: ${nextClass.subject} (${nextClass.room})`;
