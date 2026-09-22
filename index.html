@@ -200,7 +200,7 @@
             '10-23': { 7: { d: 5, p: 6 } },
             '10-26': { 7: { d: 4, p: 5 } },
             '10-27': { 6: { d: 2, p: 5 }, 7: { d: 3, p: 5 } },
-            '10-30': { 7: { d: 5, p: 5 } },
+            '10-30': { 7: { d: 5, p: 6 } },
             '11-02': { 7: { d: 5, p: 6 } },
             '11-03': { 6: { d: 4, p: 5 }, 7: { d: 4, p: 6 } },
             '11-06': { 7: { d: 5, p: 6 } },
@@ -335,7 +335,7 @@
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
             const currentSeconds = now.getSeconds();
             
-            let timeRangeText = "";
+            let timeRangeText = "방과 후";
             let progressPercent = 0;
             let remainingText = "";
 
@@ -350,8 +350,12 @@
 
                 if (currentMinutes >= startMin && currentMinutes < endMin) {
                     activePeriodObj = slot;
-                    if (i + 1 < periodSlots.length) {
-                        nextPeriodObj = periodSlots[i + 1];
+                    // 다음 수업 과목(교시) 찾기
+                    for (let j = i + 1; j < periodSlots.length; j++) {
+                        if (typeof periodSlots[j].period === 'number' && periodSlots[j].period > 0) {
+                            nextPeriodObj = periodSlots[j];
+                            break;
+                        }
                     }
                     break;
                 }
@@ -407,7 +411,7 @@
                     const remSec = remainSecs % 60;
                     remainingText = `${remMin}분 ${remSec}초 전`;
                     
-                    nextPeriodObj = periodSlots[0];
+                    nextPeriodObj = periodSlots.find(s => s.period === 1);
                 } else {
                     document.getElementById('period-badge').innerText = "방과 후 / 하교";
                     document.getElementById('current-subject').innerText = "오늘 일정 종료";
